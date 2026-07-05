@@ -816,20 +816,22 @@ if(!touch&&!reduced){document.querySelectorAll('.tilt').forEach(el=>{
     const gl=el.querySelector('.glare');if(gl){gl.style.setProperty('--gx',px*100+'%');gl.style.setProperty('--gy',py*100+'%');}});
   el.addEventListener('mouseleave',()=>{el.style.transform='';});});}
 
-/* image lightbox: visual / space / illustration */
+/* image lightbox: static design works */
 (function(){
   const box=document.getElementById('img-lightbox');if(!box)return;
   const photo=box.querySelector('img'),caption=box.querySelector('#lb-caption'),closeBtn=box.querySelector('.lb-close');
   let active=null;
-  function textFor(card,i){
+  function getImg(card){return card.matches('img')?card:card.querySelector('img');}
+  function textFor(item){
+    const card=item.card;
     const cap=card.querySelector('figcaption');
     if(cap)return cap.innerText.replace(/\s+/g,' ').trim();
-    if(card.closest('#space'))return `室內設計作品 ${i+1}`;
-    return card.querySelector('img')?.alt||`作品 ${i+1}`;
+    const img=getImg(card);
+    return img?.alt||`${item.group} ${item.index+1}`;
   }
-  function openLightbox(card,i){
-    const img=card.querySelector('img');if(!img)return;
-    active=card;const label=textFor(card,i);
+  function openLightbox(item){
+    const card=item.card,img=getImg(card);if(!img)return;
+    active=card;const label=textFor(item);
     photo.src=img.currentSrc||img.src;photo.alt=img.alt||label;
     caption.textContent=label;
     box.classList.add('open');box.setAttribute('aria-hidden','false');document.body.classList.add('lb-open');
@@ -839,15 +841,22 @@ if(!touch&&!reduced){document.querySelectorAll('.tilt').forEach(el=>{
     box.classList.remove('open');box.setAttribute('aria-hidden','true');document.body.classList.remove('lb-open');
     if(active){active.focus({preventScroll:true});active=null;}
   }
-  const cards=[...document.querySelectorAll('#visual .vg figure,#space .sp .glow,#illustration .ill figure')];
-  cards.forEach((card,i)=>{
-    const label=textFor(card,i);
+  const groups=[
+    ['#visual .vg figure','平面作品'],
+    ['#brand .hong .imgs img','品牌平面作品'],
+    ['#expo .expo figure','展演視覺作品'],
+    ['#space .sp .glow','室內設計作品'],
+    ['#illustration .ill figure','插畫作品']
+  ];
+  const cards=groups.flatMap(([selector,group])=>[...document.querySelectorAll(selector)].map((card,index)=>({card,group,index})));
+  cards.forEach(item=>{
+    const card=item.card,label=textFor(item);
     card.classList.add('lightbox-target');
     card.setAttribute('role','button');
     card.setAttribute('tabindex','0');
     card.setAttribute('aria-label',`放大查看：${label}`);
-    card.addEventListener('click',e=>{e.preventDefault();openLightbox(card,i);});
-    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLightbox(card,i);}});
+    card.addEventListener('click',e=>{e.preventDefault();openLightbox(item);});
+    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLightbox(item);}});
   });
   closeBtn.addEventListener('click',closeLightbox);
   box.addEventListener('click',e=>{if(e.target===box)closeLightbox();});
