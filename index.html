@@ -328,6 +328,20 @@ html.js .hero h1 .ln:nth-child(2)>span{animation-delay:.24s}
 footer{border-top:1px solid var(--line);padding:28px 0;font-family:var(--mono);font-size:12.5px;color:var(--sub);text-align:center}
 footer b{color:var(--blue)}
 .mag{position:relative}
+.lb-open{overflow:hidden}
+.lightbox-target{cursor:zoom-in}
+.lightbox-target:focus-visible{outline:3px solid var(--gold);outline-offset:5px}
+#img-lightbox{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;padding:34px;
+  background:rgba(5,18,33,.88);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .28s ease}
+#img-lightbox.open{opacity:1;pointer-events:auto}
+#img-lightbox img{display:block;width:auto;height:auto;max-width:min(94vw,1400px);max-height:82vh;object-fit:contain;border-radius:12px;background:#fff;
+  box-shadow:0 30px 90px -30px rgba(0,0,0,.75)}
+.lb-close{position:absolute;top:22px;right:24px;width:44px;height:44px;border:1px solid rgba(255,255,255,.28);border-radius:50%;
+  background:rgba(255,255,255,.12);color:#fff;font-size:30px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lb-close:hover,.lb-close:focus-visible{background:#fff;color:var(--navy);outline:none}
+.lb-caption{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);max-width:min(860px,88vw);padding:9px 16px;border-radius:999px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:14px;text-align:center;backdrop-filter:blur(10px)}
+@media(max-width:700px){#img-lightbox{padding:18px}.lb-close{top:12px;right:12px}.lb-caption{bottom:12px;border-radius:12px;font-size:12.5px}}
 
 /* reveal */
 .rev{opacity:1}
@@ -335,7 +349,7 @@ html.js .rev{opacity:0;transform:translateY(36px);transition:opacity .9s cubic-b
 html.js .rev.in{opacity:1;transform:none}
 html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fsteps,.fnums,.baits,.chips,.vid2)>*{opacity:0;transform:translateY(40px) scale(.98);transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1)}
 html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fsteps,.fnums,.baits,.chips,.vid2).in>*{opacity:1;transform:none}
-@media print{nav,#bar,#aurora,#stars,#cdot,#cring,.shapes,.scroll-cue{display:none}
+@media print{nav,#bar,#aurora,#stars,#cdot,#cring,.shapes,.scroll-cue,#img-lightbox{display:none}
   section{padding:40px 0}html.js .rev,html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fsteps,.fnums,.baits,.chips,.vid2)>*{opacity:1!important;transform:none!important}
   html.js .hero h1 .ln>span{transform:none!important;animation:none!important}
   #proof{background:#fff!important;color:#000!important}#proof .scan,.glitch::before,.glitch::after{display:none!important}
@@ -343,6 +357,7 @@ html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fste
 @media(prefers-reduced-motion:reduce){
   html.js .rev,html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fsteps,.fnums,.baits,.chips,.vid2)>*{opacity:1;transform:none;transition:none}
   html.js .hero h1 .ln>span{transform:none;animation:none}
+  #img-lightbox{transition:none}
   #aurora::before,.shapes b,.pwrap .ring,#proof .scan,.bk,.glitch.decoded::before,.glitch.decoded::after{animation:none}
   .glitch::before,.glitch::after{opacity:0}}
 </style>
@@ -352,6 +367,11 @@ html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fste
 <div id="aurora"></div>
 <canvas id="stars"></canvas>
 <div id="cdot"></div><div id="cring"></div>
+<div id="img-lightbox" role="dialog" aria-modal="true" aria-label="作品原圖" aria-hidden="true">
+  <button class="lb-close" type="button" aria-label="關閉放大圖片">&times;</button>
+  <img alt="">
+  <div class="lb-caption" id="lb-caption"></div>
+</div>
 <div id="bar"></div>
 
 <nav id="nav"><div class="wrap">
@@ -613,7 +633,7 @@ html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fste
 </div></section>
 
 <!-- ILLUSTRATION -->
-<section><div class="wrap">
+<section id="illustration"><div class="wrap">
   <div class="sec-head rev">
     <div class="kicker">Illustration</div>
     <h2 class="sec-title">插畫：<em>觀察力</em>是行銷與繪畫的共同基石。</h2>
@@ -795,6 +815,44 @@ if(!touch&&!reduced){document.querySelectorAll('.tilt').forEach(el=>{
     el.style.transform=`perspective(800px) rotateX(${(py-.5)*-8}deg) rotateY(${(px-.5)*8}deg) translateZ(6px)`;
     const gl=el.querySelector('.glare');if(gl){gl.style.setProperty('--gx',px*100+'%');gl.style.setProperty('--gy',py*100+'%');}});
   el.addEventListener('mouseleave',()=>{el.style.transform='';});});}
+
+/* image lightbox: visual / space / illustration */
+(function(){
+  const box=document.getElementById('img-lightbox');if(!box)return;
+  const photo=box.querySelector('img'),caption=box.querySelector('#lb-caption'),closeBtn=box.querySelector('.lb-close');
+  let active=null;
+  function textFor(card,i){
+    const cap=card.querySelector('figcaption');
+    if(cap)return cap.innerText.replace(/\s+/g,' ').trim();
+    if(card.closest('#space'))return `室內設計作品 ${i+1}`;
+    return card.querySelector('img')?.alt||`作品 ${i+1}`;
+  }
+  function openLightbox(card,i){
+    const img=card.querySelector('img');if(!img)return;
+    active=card;const label=textFor(card,i);
+    photo.src=img.currentSrc||img.src;photo.alt=img.alt||label;
+    caption.textContent=label;
+    box.classList.add('open');box.setAttribute('aria-hidden','false');document.body.classList.add('lb-open');
+    closeBtn.focus({preventScroll:true});
+  }
+  function closeLightbox(){
+    box.classList.remove('open');box.setAttribute('aria-hidden','true');document.body.classList.remove('lb-open');
+    if(active){active.focus({preventScroll:true});active=null;}
+  }
+  const cards=[...document.querySelectorAll('#visual .vg figure,#space .sp .glow,#illustration .ill figure')];
+  cards.forEach((card,i)=>{
+    const label=textFor(card,i);
+    card.classList.add('lightbox-target');
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+    card.setAttribute('aria-label',`放大查看：${label}`);
+    card.addEventListener('click',e=>{e.preventDefault();openLightbox(card,i);});
+    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLightbox(card,i);}});
+  });
+  closeBtn.addEventListener('click',closeLightbox);
+  box.addEventListener('click',e=>{if(e.target===box)closeLightbox();});
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&box.classList.contains('open'))closeLightbox();});
+})();
 
 /* magnetic */
 if(!touch&&!reduced){document.querySelectorAll('.mag').forEach(el=>{
