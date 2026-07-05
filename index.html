@@ -106,6 +106,10 @@ html.js .hero h1 .ln:nth-child(1)>span{animation-delay:.1s}
 html.js .hero h1 .ln:nth-child(2)>span{animation-delay:.24s}
 @keyframes up{to{transform:none}}
 .hero h1 em{font-style:normal;color:var(--blue)}
+.morph{display:inline-block;position:relative;width:6em;max-width:100%;color:var(--blue);vertical-align:baseline}
+.morph span{position:absolute;left:0;top:0;white-space:nowrap;opacity:0;transform:translateY(40%);filter:blur(8px);
+  transition:opacity .5s,transform .5s,filter .5s}
+.morph span.on{opacity:1;transform:none;filter:none;position:relative}
 .hero .hand{font-family:var(--hand);font-size:clamp(19px,2vw,26px);margin-top:26px;color:var(--ink)}
 .hero .hand b{color:var(--gold);font-weight:400}
 .hero .sub{margin-top:20px;font-size:16px;color:var(--sub);max-width:540px}
@@ -354,7 +358,7 @@ html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fste
     <div>
       <div class="htag">✦ Digital Media Designer · Senao Networks</div>
       <h1>
-        <span class="ln"><span>把生硬的專業，</span></span>
+        <span class="ln"><span>把<span class="morph" id="morph"><span class="on">生硬的專業</span><span>網通規格</span><span>技術語言</span><span>有距離的內容</span></span>，</span></span>
         <span class="ln"><span>變成<em>看得懂的內容</em>。</span></span>
       </h1>
       <div class="hand rev">品牌影音、六大社群、Banner 到展會視覺——<br><b>神準需要的，往下滑都有作品。</b></div>
@@ -700,6 +704,13 @@ html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fste
 <script>
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const touch=matchMedia('(hover: none)').matches;
+
+/* hero morph */
+(function(){
+  const box=document.getElementById('morph');if(!box||reduced)return;
+  const words=[...box.querySelectorAll('span')];let i=0;
+  setInterval(()=>{words[i].classList.remove('on');i=(i+1)%words.length;words[i].classList.add('on');},2200);
+})();
 
 /* constellation */
 (function(){
