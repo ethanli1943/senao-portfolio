@@ -243,15 +243,26 @@ html.js .hero h1 .ln:nth-child(2)>span{animation-delay:.24s}
 .btn.ghost{background:transparent;border:2px solid var(--blue);color:var(--blue);box-shadow:none}
 .btn.ghost:hover{background:var(--blue);color:#fff}
 @media(max-width:820px){.hong{grid-template-columns:1fr}}
-.expo{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.expo figure{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 16px 40px -22px rgba(13,36,64,.5)}
-.expo img{aspect-ratio:16/10;object-fit:cover;transition:.6s}
-.expo figure:hover img{transform:scale(1.05)}
+.expo{display:grid;grid-template-columns:1fr;gap:26px}
+.expo-case{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);gap:26px;align-items:stretch;padding:0 0 26px;border-bottom:1px solid var(--line)}
+.expo-case:last-child{border-bottom:0;padding-bottom:0}
+.expo figure{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 18px 44px -22px rgba(13,36,64,.52);min-height:320px;background:#eaf2f9}
+.expo img{width:100%;height:100%;aspect-ratio:16/10;object-fit:cover;transition:.6s}
+.expo figure:hover img{transform:scale(1.045)}
 .expo figcaption{position:absolute;left:0;right:0;bottom:0;padding:40px 22px 16px;color:#fff;font-family:var(--serif);font-weight:900;font-size:19px;background:linear-gradient(transparent,rgba(10,31,56,.88))}
 .expo figcaption span{display:block;font-family:var(--sans);font-weight:400;font-size:13.5px;color:#cfe0f0}
+.expo-body{display:flex;flex-direction:column;justify-content:center;gap:15px}
+.expo-eyebrow{font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.expo-body h3{font-family:var(--serif);font-size:27px;line-height:1.35;color:var(--ink);margin:0}
+.expo-body p{margin:0;color:var(--sub);font-size:15.5px;line-height:1.9}
+.expo-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.expo-flow span{display:flex;align-items:center;justify-content:center;min-height:42px;border-radius:10px;background:rgba(12,111,196,.07);border:1px solid rgba(12,111,196,.14);color:var(--blue);font-weight:900;font-size:13px;text-align:center}
+.expo-tags{display:flex;flex-wrap:wrap;gap:8px}
+.expo-tag{font-size:12px;font-weight:800;border-radius:999px;padding:6px 11px;color:#866018;background:rgba(207,165,80,.16);border:1px solid rgba(207,165,80,.25)}
 .expo-note{margin-top:24px;padding:16px 22px;border-radius:12px;font-size:15px;background:rgba(12,111,196,.06);border-left:3px solid var(--gold)}
 .expo-note b{color:var(--blue)}
-@media(max-width:820px){.expo{grid-template-columns:1fr}}
+@media(max-width:900px){.expo-case{grid-template-columns:1fr}.expo figure{min-height:260px}.expo-flow{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.expo-flow{grid-template-columns:1fr}.expo-body h3{font-size:23px}}
 .sp{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .sp .glow{padding:0}.sp img{border-radius:14px;aspect-ratio:4/3;object-fit:cover}
 .ill{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
@@ -611,8 +622,26 @@ html.js :is(.bento,.jd,.covers,.mat,.vg,.ill,.ai,.st3,.tl,.expo,.sp,.fvids,.fste
     <p class="lede">艾姆設計 6 年，我參與的不只是視覺——企劃發想、品牌概念轉譯、3D 建模提案、發包製作、現場執行，一路到底。</p>
   </div>
   <div class="expo rev">
-    <figure class="tilt"><div class="glare"></div><img src="assets/e-clarins.jpg" alt="" loading="lazy"><figcaption>2016 CLARINS × Vogue 特展｜華山<span>跨界攝影展統籌，視覺藝術 × 互動影音裝置的沉浸式體驗</span></figcaption></figure>
-    <figure class="tilt"><div class="glare"></div><img src="assets/e-laneige.jpg" alt="" loading="lazy"><figcaption>2015 Laneige 蘭芝展演<span>「輕盈快速上妝」轉譯為熱氣球主題互動，導入試妝體驗</span></figcaption></figure>
+    <article class="expo-case">
+      <figure class="tilt"><div class="glare"></div><img src="assets/e-clarins.jpg" alt="CLARINS × Vogue 華山特展現場全景" loading="lazy"><figcaption>2016 CLARINS × Vogue 特展｜華山<span>跨界攝影展統籌，視覺藝術 × 互動影音裝置的沉浸式體驗</span></figcaption></figure>
+      <div class="expo-body">
+        <div class="expo-eyebrow">Case 01 / Exhibition Design</div>
+        <h3>把品牌攝影、動線與現場裝置，整理成可被觀眾停留的展覽體驗。</h3>
+        <p>參與企劃發想、品牌概念轉譯、3D 建模提案、視覺配置、發包製作與現場執行。這類經驗可銜接神準在 COMPUTEX、MWC、CES 等展會需要的攤位視覺、活動素材與跨部門溝通。</p>
+        <div class="expo-flow" aria-label="CLARINS 專案流程"><span>品牌概念轉譯</span><span>3D 提案溝通</span><span>現場落地執行</span></div>
+        <div class="expo-tags"><span class="expo-tag">國際品牌規範</span><span class="expo-tag">展場動線</span><span class="expo-tag">發包製作</span></div>
+      </div>
+    </article>
+    <article class="expo-case">
+      <figure class="tilt"><div class="glare"></div><img src="assets/e-laneige.jpg" alt="Laneige 蘭芝戶外展演活動現場" loading="lazy"><figcaption>2015 Laneige 蘭芝展演<span>「輕盈快速上妝」轉譯為熱氣球主題互動，導入試妝體驗</span></figcaption></figure>
+      <div class="expo-body">
+        <div class="expo-eyebrow">Case 02 / Brand Event</div>
+        <h3>把產品賣點轉成大型互動裝置，讓路過的人願意靠近與試用。</h3>
+        <p>從產品訴求、主視覺概念、空間比例到現場人流，都需要在提案階段先想清楚。這段經驗對應的是科技品牌活動常見的任務：把難懂規格變成可拍、可看、可被記住的現場畫面。</p>
+        <div class="expo-flow" aria-label="Laneige 專案流程"><span>產品賣點轉譯</span><span>互動主題設計</span><span>活動現場執行</span></div>
+        <div class="expo-tags"><span class="expo-tag">品牌活動</span><span class="expo-tag">大型裝置</span><span class="expo-tag">體驗導流</span></div>
+      </div>
+    </article>
   </div>
   <div class="expo-note rev">這段經驗讓我熟悉<b>國際品牌的規範溝通與現場執行</b>——也能直接銜接 <b>COMPUTEX、MWC 等國際展會</b>的攤位視覺與活動素材製作。</div>
 </div></section>
